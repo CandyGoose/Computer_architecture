@@ -2,7 +2,9 @@ from machine.isa import Opcode
 from machine.machine_signals import Signal, Operands
 import re
 
+
 class Decoder:
+
     def __init__(self, control_unit, opcode, arg):
         self.cu = control_unit
         self.opcode = opcode
@@ -169,6 +171,7 @@ class Decoder:
 
             dp.alu_working()
             dp.memory_manager(Signal.WRITE)
+
         else:
             dp.alu_working(valves=[Operands.STACK])
             dp.signal_latch_address(Signal.DATA_ADDRESS_LOAD)
@@ -185,8 +188,9 @@ class Decoder:
 
     def decode_io_commands(self):
         dp = self.cu.data_path
-        if self.opcode == Opcode.IN:
-            dp.signal_latch_acc(Signal.DIRECT_ACC_LOAD, dp.read_input())
-        elif self.opcode == Opcode.OUT:
-            dp.write_output(self.arg)
+        dp.ports.tick = self.cu.get_ticks()
+        if self.opcode in [Opcode.IN, Opcode.OUT]:
+            dp.ports.io_buffer_manager(self.opcode, self.arg)
+        else:
+            dp.ports.inverse_signal(self.arg)
         self.cu.tick()

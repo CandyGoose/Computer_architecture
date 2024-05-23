@@ -23,6 +23,7 @@ jobs:
 
       - name: Run tests
         run: |
+          cd lab3
           pytest
 
   lint:
@@ -44,4 +45,5 @@ jobs:
 
       - name: Run linter
         run: |
+          cd lab3
           ruff check .

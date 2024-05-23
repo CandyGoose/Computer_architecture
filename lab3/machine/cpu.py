@@ -1,6 +1,5 @@
 from machine.decoder import Decoder
 from machine.machine_signals import Signal, Operands
-from libs.log import LogHandler as log
 from machine.isa import Opcode
 from machine.logger import Logger
 
@@ -8,9 +7,12 @@ arithmetic_operations = [Opcode.ADD, Opcode.SUB, Opcode.MUL,
                          Opcode.DIV, Opcode.REM, Opcode.INC,
                          Opcode.DEC, Opcode.CMP, Opcode.MOVH]
 
+
 class DataPath:
-    def __init__(self, memory_capacity, input_tokens):
+
+    def __init__(self, memory_capacity, ports):
         self.data_memory = [0] * memory_capacity
+        self.ports = ports
         self.acc = 0
         self.buf_reg = 0
         self.stack_pointer = 0
@@ -19,14 +21,9 @@ class DataPath:
         self.flags = {"z": False, "n": False}
         self.alu_out = 0
         self.in_interruption = False
-        self.input_tokens = input_tokens
-        self.output_chars = []
 
     def signal_latch_acc(self, sel, load=0):
-        if sel == Signal.DIRECT_ACC_LOAD:
-            self.acc = load
-        else:
-            self.acc = self.alu_out
+        self.acc = load if sel == Signal.DIRECT_ACC_LOAD else self.alu_out
 
     def signal_latch_address(self, sel, load=0):
         self.address_reg = load if sel == Signal.DIRECT_ADDRESS_LOAD else self.alu_out
@@ -85,17 +82,9 @@ class DataPath:
         elif len(valves) > 1:
             self.alu_out = self.execute_alu_operation(operation, self.get_bus_value(valves[1]))
 
-    def read_input(self):
-        if self.input_tokens:
-            time, char = self.input_tokens.pop(0)
-            return ord(char)
-        return 0
-
-    def write_output(self, char):
-        self.output_chars.append(chr(char))
-
 
 class ControlUnit:
+
     def __init__(self, code_file, instructions, data_path):
         self.ip = instructions[0]["_start"]
         del instructions[0]
@@ -113,25 +102,11 @@ class ControlUnit:
     def get_ticks(self):
         return self._tick
 
-    def set_ticks(self, value):
-        self._tick = value
-
-    def get_instructions(self):
-        return self.instr_counter
-
-    def set_instructions(self, value):
-        self.instr_counter = value
-
-    def get_output_chars(self):
-        return self.data_path.output_chars
-
-    def set_output_chars(self, value):
-        self.data_path.output_chars = value
-
     def tick(self):
         self.log.debug(self, self._tick)
 
         self._tick += 1
+        self.data_path.ports.add_input(self._tick)
         self.data_path.alu_out = 0
         self.data_path.memory_out = 0
 
@@ -146,6 +121,8 @@ class ControlUnit:
             self.instr_counter += 1
             decode = Decoder(self, self.instr["opcode"], self.instr["arg"] if "arg" in self.instr else 0)
             signal = Signal.NEXT_IP
+            if not self.data_path.ports.input_tokens:
+                pass
 
             if decode.opcode in [Opcode.LOAD, Opcode.STORE]:
                 decode.decode_memory_commands()
@@ -159,7 +136,7 @@ class ControlUnit:
                 decode.decode_interrupt_commands()
             elif decode.opcode in [Opcode.PUSH, Opcode.POP]:
                 decode.decode_stack_commands()
-            elif decode.opcode in [Opcode.IN, Opcode.OUT]:
+            elif decode.opcode in [Opcode.IN, Opcode.OUT, Opcode.SIGN]:
                 decode.decode_io_commands()
 
             if self.instr["opcode"] not in [Opcode.CALL, Opcode.IRET]:
@@ -169,8 +146,9 @@ class ControlUnit:
                 decode.opcode = Opcode.ISR
                 decode.decode_subprogram_commands()
         self.instr = self.instructions[self.ip]
-        log.debug(self)
-        return self.data_path.output_chars, self.instr_counter, self._tick
+        self.log.debug(self, self._tick)
+
+        return "".join(self.data_path.ports.output_buffer), self.instr_counter, self._tick
 
     def signal_latch_ip(self, signal=Signal.NEXT_IP, arg=0):
         match signal:
@@ -194,4 +172,3 @@ class ControlUnit:
         def __init__(self):
             self.time = -2
             self.timer_delay = 0
-

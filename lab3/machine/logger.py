@@ -27,14 +27,15 @@ class Logger:
         if codes[self.code]:
             self.log.warning("\n... Continue! ...\n")
 
+
     def can_log(self, tick):
         codes = {}
         if self.type == "processor":
             codes = {
                 "hello_machine.txt": tick <= 100,
-                "cat_machine.txt": tick <= 79 or 4268 <= tick <= 5000,
+                "cat_machine.txt": tick <= 153 or 380 <= tick <= 390 or 4250 <= tick,
                 "hello_user_name_machine.txt": tick <= 100,
-                "prob1_machine.txt": tick <= 100 or 1250 <= tick
+                "prob1_machine.txt": tick <= 100
             }
         return codes[self.code]
 

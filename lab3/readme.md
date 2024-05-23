@@ -47,6 +47,7 @@ op2 ::= "store"
 op3 ::= "in"
       | "out"
       | "timer"
+      | "sign"
 
 op4 ::= "jmp"
       | "je"
@@ -109,8 +110,7 @@ _Операции со стеком:_
 _Операции ввода-вывода:_
 - `in` - записать бит с буфера ввода в младший бит аккумулятора
 - `out` - записать старший бит аккумулятора в буфер вывода
-
-
+- `sign` - инвертировать сигнал на указанном порту
 - `halt` - остановить процессор
 
 **Метки**
@@ -324,6 +324,7 @@ label:
 |------------|:-------------:|----------------|
 | in         |       1       | ACC(0) = P(A)  |
 | out        |       1       | P(A) = ACC(31) |
+| sign       |       1       | P(A) = ~P(A)   |
 
 | Инструкция | Кол-во тактов | Мнемоника            |
 |------------|:-------------:|----------------------|
@@ -551,7 +552,7 @@ DataPath и выполняющие инструкции процессора. К
 - ```hello.asm``` - [hello_asm.yml](https://github.com/VeraKasianenko/Computer_architecture/blob/main/tests/hello_asm.yml)
 - ```cat.asm``` - [cat_asm.yml](https://github.com/VeraKasianenko/Computer_architecture/blob/main/tests/cat_asm.yml)
 - ```hello_user_name.asm``` - [hello_user_name_asm.yml](https://github.com/VeraKasianenko/Computer_architecture/blob/main/tests/hello_user_name_asm.yml)
-- ```prob1.asm``` - [prob2_asm.yml](https://github.com/VeraKasianenko/Computer_architecture/blob/main/tests/prob1_asm.yml)
+- ```prob1.asm``` - [prob1_asm.yml](https://github.com/VeraKasianenko/Computer_architecture/blob/main/tests/prob1_asm.yml)
 
 Наиболее подробно разобран алгоритм ```hello_user_name```
 - Ввод:

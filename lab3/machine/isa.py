@@ -33,5 +33,6 @@ class Opcode:
 
     IN = "in"
     OUT = "out"
+    SIGN = "sign"
 
     HALT = "halt"

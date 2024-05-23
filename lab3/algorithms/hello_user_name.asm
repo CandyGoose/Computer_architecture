@@ -1,5 +1,6 @@
 transfer:
     out 2
+    sign 0
     in 1
     store *3
     iret
@@ -10,6 +11,7 @@ print:
     load 16
     store *4
 
+    sign 3
     ei
     char:
         load *3
@@ -18,6 +20,7 @@ print:
         store *4
         jne char
     di
+    sign 3
     load *3
     cmp 0
     je skip
@@ -26,9 +29,11 @@ print:
     skip: ret
 
 _start:
+    vec
     func transfer
     store *0
     timer 7
+    sign 3
 
     call hello
 
@@ -41,7 +46,7 @@ _start:
     waiting_for_chars:
         load 1
         call print
-        cmp 1
+        cmp 0
         je waiting_for_chars
 
     load **1+
