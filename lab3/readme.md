@@ -330,7 +330,7 @@ label:
 |------------|:-------------:|----------------------|
 | halt       |       0       | Остановка процессора |
 
-В файле [isa.py](https://github.com/VeraKasianenko/Computer_architecture/blob/main/machine/isa.py) указана инструкция "isr",
+В файле [isa.py](https://github.com/CandyGoose/Computer_architecture/blob/main/machine/isa.py) указана инструкция "isr",
 которая совершает переход на подпрограмму обработки прерывания. Теоретически она может использоваться как
 инструкция, однако это бессмысленно. Была добавлена, чтобы не усложнять код.
 
@@ -356,14 +356,14 @@ label:
 - opcode - строка с кодом операции;
 - arg - аргумент (может отсутствовать);
 
-Все инструкции описаны в файле [isa.py](https://github.com/VeraKasianenko/Computer_architecture/blob/main/machine/isa.py) в классе
+Все инструкции описаны в файле [isa.py](https://github.com/CandyGoose/Computer_architecture/blob/main/machine/isa.py) в классе
 `Opcode`.
 
 ## Транслятор
 
 Интерфейс командной строки: translator.py <input_file> <target_file>
 
-Реализовано в модуле: [translator.py](https://github.com/VeraKasianenko/Computer_architecture/blob/main/translator.py)
+Реализовано в модуле: [translator.py](https://github.com/CandyGoose/Computer_architecture/blob/main/translator.py)
 
 Алгоритм трансляции:
 1. Дробление каждой строки на слова по пробелам.
@@ -418,15 +418,15 @@ label:
                                                                                          +------------+ 
 ```
 
-Реализован в классе ```ControlUnit``` в модуле [cpu.py](https://github.com/VeraKasianenko/Computer_architecture/blob/main/machine/cpu.py).
+Реализован в классе ```ControlUnit``` в модуле [cpu.py](https://github.com/CandyGoose/Computer_architecture/blob/main/machine/cpu.py).
 
 Hardwired (реализовано полностью на Python).
 - Цикл симуляции осуществляется в метод ```execute```.
 - В методе ```execute``` вызываются методы класса ```Decoder```, формирующие управляющие сигналы и данные в 
 DataPath и выполняющие инструкции процессора. Класс ```Decoder``` реализован в модуле
-[decoder.py](https://github.com/VeraKasianenko/Computer_architecture/blob/main/machine/decoder.py).
+[decoder.py](https://github.com/CandyGoose/Computer_architecture/blob/main/machine/decoder.py).
 - Отсчет времени работы ведется в тактах. После каждого такта (вариант _tick_) в логовый файл 
-[processor.txt](https://github.com/VeraKasianenko/Computer_architecture/blob/main/machine/logs/processor.txt) добавляется информация
+[processor.txt](https://github.com/CandyGoose/Computer_architecture/blob/main/machine/logs/processor.txt) добавляется информация
 о состоянии процессора. Состояние процессора показывает:
     - текущую инструкцию
     - время в тактах
@@ -437,7 +437,7 @@ DataPath и выполняющие инструкции процессора. К
     - вектор прерывания
     - задержка таймера прерываний
 - Логирование осуществляется с использованием модуля **logging**. Для логирования реализован класс ```Logger``` в
-модуле [logger.py](https://github.com/VeraKasianenko/Computer_architecture/blob/main/machine/logger.py) для более умной работы с
+модуле [logger.py](https://github.com/CandyGoose/Computer_architecture/blob/main/machine/logger.py) для более умной работы с
 логом.
 - Процессор выполняет инструкции, пока не дойдет до инструкции halt.
 - В Control Unit содержатся таймер прерываний, в который приходят 2 шины: 
@@ -496,13 +496,13 @@ DataPath и выполняющие инструкции процессора. К
                                                                                         +-------------+
 ``` 
 
-Реализован в классе ```DataPath``` в модуле [cpu.py](https://github.com/VeraKasianenko/Computer_architecture/blob/main/machine/cpu.py).
+Реализован в классе ```DataPath``` в модуле [cpu.py](https://github.com/CandyGoose/Computer_architecture/blob/main/machine/cpu.py).
 
 - Управляющие сигналы и данные на шинах поступают с декодера
 
 **Сигналы**
 
-Все сигналы хранятся в модуле [machine_signals.py](https://github.com/VeraKasianenko/Computer_architecture/blob/main/machine/machine_signals.py)
+Все сигналы хранятся в модуле [machine_signals.py](https://github.com/CandyGoose/Computer_architecture/blob/main/machine/machine_signals.py)
 - ```latch_acc/buf/stack/address```. Защелкивают значения с шин в регистры.
   - ```signal_latch_acc``` - для аккумулятора
   - ```signal_latch_address``` - для адресного регистра
@@ -541,7 +541,7 @@ DataPath и выполняющие инструкции процессора. К
 ## Тестирование
 
 Тестирование выполняется при помощи golden test-ов в формате yaml. Файлы .yml лежат в папке 
-[tests](https://github.com/VeraKasianenko/Computer_architecture/tree/main/tests). Тесты содержат входные данные и проверку на
+[tests](https://github.com/CandyGoose/Computer_architecture/tree/main/tests). Тесты содержат входные данные и проверку на
 - код программы
 - машинный код
 - вывод процессора
@@ -549,10 +549,10 @@ DataPath и выполняющие инструкции процессора. К
 
 **Алгоритмы и их тесты**
 
-- ```hello.asm``` - [hello_asm.yml](https://github.com/VeraKasianenko/Computer_architecture/blob/main/tests/hello_asm.yml)
-- ```cat.asm``` - [cat_asm.yml](https://github.com/VeraKasianenko/Computer_architecture/blob/main/tests/cat_asm.yml)
-- ```hello_user_name.asm``` - [hello_user_name_asm.yml](https://github.com/VeraKasianenko/Computer_architecture/blob/main/tests/hello_user_name_asm.yml)
-- ```prob1.asm``` - [prob1_asm.yml](https://github.com/VeraKasianenko/Computer_architecture/blob/main/tests/prob1_asm.yml)
+- ```hello.asm``` - [hello_asm.yml](https://github.com/CandyGoose/Computer_architecture/blob/main/tests/hello_asm.yml)
+- ```cat.asm``` - [cat_asm.yml](https://github.com/CandyGoose/Computer_architecture/blob/main/tests/cat_asm.yml)
+- ```hello_user_name.asm``` - [hello_user_name_asm.yml](https://github.com/CandyGoose/Computer_architecture/blob/main/tests/hello_user_name_asm.yml)
+- ```prob1.asm``` - [prob1_asm.yml](https://github.com/CandyGoose/Computer_architecture/blob/main/tests/prob1_asm.yml)
 
 Наиболее подробно разобран алгоритм ```hello_user_name```
 - Ввод:
@@ -567,16 +567,16 @@ DataPath и выполняющие инструкции процессора. К
     ticks_count: 13805
     instructions_count: 6148
     ```
-- Файл с кодом - [hello_user_name.asm](https://github.com/VeraKasianenko/Computer_architecture/blob/main/algorithms/hello_user_name.asm)
-- Машинный код - [hello_user_name_machine.txt](https://github.com/VeraKasianenko/Computer_architecture/blob/main/machine/machine_instructions/hello_user_name_machine.txt)
-- Журнал работы процессора - [processor.txt](https://github.com/VeraKasianenko/Computer_architecture/blob/main/machine/logs/processor.txt)
+- Файл с кодом - [hello_user_name.asm](https://github.com/CandyGoose/Computer_architecture/blob/main/algorithms/hello_user_name.asm)
+- Машинный код - [hello_user_name_machine.txt](https://github.com/CandyGoose/Computer_architecture/blob/main/machine/machine_instructions/hello_user_name_machine.txt)
+- Журнал работы процессора - [processor.txt](https://github.com/CandyGoose/Computer_architecture/blob/main/machine/logs/processor.txt)
 
 
-Основной файл с кодом теста находится в модуле [golden_asm_test.py](https://github.com/VeraKasianenko/Computer_architecture/blob/main/golden_asm_test.py)
+Основной файл с кодом теста находится в модуле [golden_asm_test.py](https://github.com/CandyGoose/Computer_architecture/blob/main/golden_asm_test.py)
 
 ### CI
 
-Настройка CI находится в файле [.github/ci.yml](https://github.com/VeraKasianenko/Computer_architecture/blob/main/.github/workflows/ci.yml)
+Настройка CI находится в файле [.github/ci.yml](https://github.com/CandyGoose/Computer_architecture/blob/main/.github/workflows/ci.yml)
 - on: push - означает, что рабочий процесс будет запускаться, когда происходит пуш в репозиторий.
 - test и lint - это рабочие процессы. В данном случае тестирование и линтер.
 - runs-on: ubuntu-latest -  указывает, что рабочий процесс будет выполняться в среде Ubuntu последней версии.
